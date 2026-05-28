@@ -1,0 +1,50 @@
+redis_config_sets = {}
+
+redis_clusters = {
+  primary = {
+    compartment_name   = "dev"
+    display_name       = "primary"
+    cluster_mode       = "NONSHARDED"
+    node_count         = 3
+    node_memory_in_gbs = 2
+    software_version   = "REDIS_7_0"
+    subnet_name        = "cache"
+    nsg_names          = ["cache"]
+    freeform_tags = {
+      stack = "private_oci_cache_with_redis_insight"
+    }
+  }
+}
+
+redis_users = {
+  iam_admin = {
+    compartment_name = "dev"
+    name             = "cachelab-iam-admin"
+    description      = "IAM-authenticated admin user"
+    acl_string       = "~* +@read"
+    status           = "ON"
+    authentication_mode = {
+      authentication_type = "IAM"
+      hashed_passwords    = []
+    }
+  }
+}
+
+redis_cluster_user_attachments = {
+  primary_admin = {
+    redis_cluster_name = "primary"
+    redis_user_names   = ["iam_admin"]
+  }
+}
+
+redis_identity_tokens = {}
+
+redis_backups = {
+  primary = {
+    compartment_name         = "dev"
+    display_name             = "primary-backup"
+    source_cluster_name      = "primary"
+    backup_source            = "PRIMARY"
+    retention_period_in_days = 7
+  }
+}

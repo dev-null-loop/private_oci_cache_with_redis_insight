@@ -1,0 +1,38 @@
+source_ids = {
+  "Oracle-Linux-10.1-2026.04.30-3" = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaae5rgpcr5t7hwknaeatew32bw5p4ytmzeg2w7mbjot2vhbzw7bwia"
+}
+
+instances = {
+  redis_insight = {
+    availability_domain = 1
+    compartment_name    = "dev"
+    display_name        = "redis-insight"
+    shape               = "VM.Standard.E5.Flex"
+    shape_config = {
+      memory_in_gbs = 8
+      ocpus         = 1
+    }
+    create_vnic_details = {
+      assign_public_ip = true
+      hostname_label   = "redisinsight"
+      subnet_name      = "redis_insight"
+      nsg_names        = ["redis_insight"]
+    }
+    source_details = {
+      source_name = "Oracle-Linux-10.1-2026.04.30-3"
+      source_type = "image"
+    }
+    ssh_public_keys = [
+      "ssh-rsa AAAA...replace_me"
+    ]
+    cloud_init = [
+      {
+	filename     = "userdata/redis-insight-cloud-config.yaml.tftpl"
+	content_type = "text/cloud-config"
+	vars = {
+	  redis_insight_container_image = "redis/redisinsight:latest"
+	}
+      }
+    ]
+  }
+}

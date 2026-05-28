@@ -1,0 +1,69 @@
+vcns = {
+  vcn = {
+    cidr_blocks      = ["10.70.0.0/16"]
+    display_name     = "cache-vcn"
+    dns_label        = "cachevcn"
+    compartment_name = "dev"
+    is_ipv6enabled   = false
+  }
+}
+
+internet_gateways = {
+  ig = {
+    display_name = "cache-ig"
+    vcn_name     = "vcn"
+  }
+}
+
+nat_gateways = {
+  ng = {
+    display_name = "cache-ng"
+    vcn_name     = "vcn"
+  }
+}
+
+service_gateways = {
+  sg = {
+    display_name = "cache-sg"
+    vcn_name     = "vcn"
+    service_name = "services"
+  }
+}
+
+subnets = {
+  redis_insight = {
+    compartment_name           = "dev"
+    display_name               = "redis-insight"
+    cidr_block                 = "10.70.10.0/24"
+    dns_label                  = "insight"
+    prohibit_internet_ingress  = false
+    prohibit_public_ip_on_vnic = false
+    sl_name                    = "redis_insight"
+    rt_name                    = "public"
+    vcn_name                   = "vcn"
+  }
+  cache = {
+    compartment_name           = "dev"
+    display_name               = "cache"
+    cidr_block                 = "10.70.20.0/24"
+    dns_label                  = "cache"
+    prohibit_internet_ingress  = true
+    prohibit_public_ip_on_vnic = true
+    sl_name                    = "cache"
+    rt_name                    = "private"
+    vcn_name                   = "vcn"
+  }
+}
+
+network_security_groups = {
+  redis_insight = {
+    compartment_name = "dev"
+    display_name     = "redis-insight-nsg"
+    vcn_name         = "vcn"
+  }
+  cache = {
+    compartment_name = "dev"
+    display_name     = "cache-nsg"
+    vcn_name         = "vcn"
+  }
+}
