@@ -192,17 +192,6 @@ variable "instances" {
     state         = optional(string, "RUNNING")
     defined_tags  = optional(map(string), null)
     freeform_tags = optional(map(string), {})
-    agent_config = optional(object({
-      are_all_plugins_disabled = optional(bool, false)
-      is_management_disabled   = optional(bool, false)
-      is_monitoring_disabled   = optional(bool, false)
-      plugins_config           = optional(list(string), [])
-      }), {
-      are_all_plugins_disabled = false
-      is_management_disabled   = false
-      is_monitoring_disabled   = false
-      plugins_config           = []
-    })
     create_vnic_details = object({
       assign_public_ip       = optional(bool, false)
       defined_tags           = optional(map(string), null)
