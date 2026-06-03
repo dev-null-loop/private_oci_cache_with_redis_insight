@@ -56,16 +56,16 @@ variable "security_lists" {
       destination      = string
       destination_type = optional(string, "CIDR_BLOCK")
       tcp_options = optional(object({
-	min = number
-	max = number
+        min = number
+        max = number
       }))
       udp_options = optional(object({
-	min = number
-	max = number
+        min = number
+        max = number
       }))
       icmp_options = optional(object({
-	type = number
-	code = optional(number)
+        type = number
+        code = optional(number)
       }))
     }))
     ingress_rules = list(object({
@@ -75,16 +75,16 @@ variable "security_lists" {
       source      = string
       source_type = optional(string, "CIDR_BLOCK")
       tcp_options = optional(object({
-	min = number
-	max = number
+        min = number
+        max = number
       }))
       udp_options = optional(object({
-	min = number
-	max = number
+        min = number
+        max = number
       }))
       icmp_options = optional(object({
-	type = number
-	code = optional(number)
+        type = number
+        code = optional(number)
       }))
     }))
   }))
@@ -146,28 +146,28 @@ variable "network_security_group_rules" {
       source_type      = optional(string, "CIDR_BLOCK")
       stateless        = optional(bool, false)
       tcp_options = optional(object({
-	destination_port_range = optional(object({
-	  min = number
-	  max = number
-	}))
-	source_port_range = optional(object({
-	  min = number
-	  max = number
-	}))
+        destination_port_range = optional(object({
+          min = number
+          max = number
+        }))
+        source_port_range = optional(object({
+          min = number
+          max = number
+        }))
       }))
       udp_options = optional(object({
-	destination_port_range = optional(object({
-	  min = number
-	  max = number
-	}))
-	source_port_range = optional(object({
-	  min = number
-	  max = number
-	}))
+        destination_port_range = optional(object({
+          min = number
+          max = number
+        }))
+        source_port_range = optional(object({
+          min = number
+          max = number
+        }))
       }))
       icmp_options = optional(object({
-	type = optional(string)
-	code = optional(number)
+        type = optional(string)
+        code = optional(number)
       }))
     })
   }))
@@ -214,6 +214,7 @@ variable "instances" {
       security_attributes    = optional(map(string), null)
       skip_source_dest_check = optional(bool, false)
       subnet_name            = string
+      subnet_id              = optional(string)
     })
     ssh_public_keys = optional(list(string), [])
     cloud_init = optional(list(object({

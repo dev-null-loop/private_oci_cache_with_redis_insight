@@ -26,7 +26,7 @@ locals {
   security_lists = {
     for k, v in var.security_lists : k => merge(v, {
       egress_rules = [for rule in v.egress_rules : merge(rule, {
-	destination = try(local.services[rule.destination].cidr_block, rule.destination)
+        destination = try(local.services[rule.destination].cidr_block, rule.destination)
       })]
     })
   }
@@ -34,12 +34,12 @@ locals {
   route_tables = {
     for k, v in var.route_tables : k => merge(v, {
       route_rules = [
-	for rr in v.route_rules : {
-	  description       = rr.description
-	  destination       = try(local.services[rr.destination].cidr_block, rr.destination)
-	  destination_type  = rr.destination_type
-	  network_entity_id = local.network_entity_ids[rr.network_entity_name]
-	}
+        for rr in v.route_rules : {
+          description       = rr.description
+          destination       = try(local.services[rr.destination].cidr_block, rr.destination)
+          destination_type  = rr.destination_type
+          network_entity_id = local.network_entity_ids[rr.network_entity_name]
+        }
       ]
     })
   }
@@ -48,13 +48,14 @@ locals {
     for k, v in var.instances : k => merge(v, {
       availability_domain = local.availability_domains[v.availability_domain]
       create_vnic_details = merge(v.create_vnic_details, {
-	subnet_id = module.sn[v.create_vnic_details.subnet_name].id
-	nsg_ids   = [for nsg_name in v.create_vnic_details.nsg_names : module.nsg[nsg_name].id]
+        subnet_id = try(module.sn[v.create_vnic_details.subnet_name].id, v.create_vnic_details.subnet_id)
+        nsg_ids   = [for nsg_name in v.create_vnic_details.nsg_names : module.nsg[nsg_name].id]
       })
       source_details = merge(v.source_details, {
-	source_id = var.source_ids[v.source_details.source_name]
+        source_id = var.source_ids[v.source_details.source_name]
       })
       ssh_public_keys = join("\n", v.ssh_public_keys)
+      cloud_init      = v.cloud_init
     })
   }
 
