@@ -91,10 +91,8 @@ module "vm" {
   agent_config               = each.value.agent_config
   enable_vnic_lookup_outputs = false
   create_vnic_details        = each.value.create_vnic_details
-  defined_tags               = each.value.defined_tags
   display_name               = each.value.display_name
   fault_domain               = each.value.fault_domain
-  freeform_tags              = each.value.freeform_tags
   preserve_boot_volume       = each.value.preserve_boot_volume
   ssh_public_keys            = each.value.ssh_public_keys
   shape                      = each.value.shape
