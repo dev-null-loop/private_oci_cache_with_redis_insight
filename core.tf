@@ -1,11 +1,12 @@
 module "vcns" {
-  source         = "git@github.com:dev-null-loop/oci_core//vcn"
-  for_each       = var.vcns
-  compartment_id = var.compartment_ids[each.value.compartment_name]
-  cidr_blocks    = each.value.cidr_blocks
-  dns_label      = each.value.dns_label
-  display_name   = each.value.display_name
-  is_ipv6enabled = each.value.is_ipv6enabled
+  source                 = "git@github.com:dev-null-loop/oci_core//vcn"
+  for_each               = var.vcns
+  compartment_id         = var.compartment_ids[each.value.compartment_name]
+  cidr_blocks            = each.value.cidr_blocks
+  dns_label              = each.value.dns_label
+  display_name           = each.value.display_name
+  is_ipv6enabled         = each.value.is_ipv6enabled
+  lookup_dns_resolver_id = false
 }
 
 module "ig" {
@@ -62,8 +63,8 @@ module "sn" {
   dns_label                  = each.value.dns_label
   prohibit_internet_ingress  = each.value.prohibit_internet_ingress
   prohibit_public_ip_on_vnic = each.value.prohibit_public_ip_on_vnic
-  route_table_id             = module.rt[each.value.rt_name].id
-  security_list_ids          = [module.sl[each.value.sl_name].id]
+  route_table_id             = try(module.rt[each.value.route_table_name].id, null)
+  security_list_ids          = try([for name in each.value.security_list_names : module.sl[name].id], null)
 }
 
 module "nsg" {
@@ -83,34 +84,22 @@ module "nsg_rule" {
 }
 
 module "vm" {
-  source              = "git@github.com:dev-null-loop/oci_core//instance"
-  for_each            = local.instances
-  availability_domain = each.value.availability_domain
-  compartment_id      = var.compartment_ids[each.value.compartment_name]
-  agent_config        = each.value.agent_config
-  create_vnic_details = {
-    assign_public_ip       = each.value.create_vnic_details.assign_public_ip
-    display_name           = each.value.create_vnic_details.display_name
-    hostname_label         = each.value.create_vnic_details.hostname_label
-    nsg_ids                = each.value.create_vnic_details.nsg_ids
-    private_ip             = each.value.create_vnic_details.private_ip
-    security_attributes    = each.value.create_vnic_details.security_attributes
-    skip_source_dest_check = each.value.create_vnic_details.skip_source_dest_check
-    subnet_id              = each.value.create_vnic_details.subnet_id
-  }
-  display_name         = each.value.display_name
-  fault_domain         = each.value.fault_domain
-  preserve_boot_volume = each.value.preserve_boot_volume
-  ssh_public_keys      = join("\n", each.value.ssh_public_keys)
-  shape                = each.value.shape
-  shape_config         = each.value.shape_config
-  source_details = {
-    source_id               = each.value.source_details.source_id
-    source_type             = each.value.source_details.source_type
-    boot_volume_size_in_gbs = each.value.source_details.boot_volume_size_in_gbs
-    boot_volume_vpus_per_gb = each.value.source_details.boot_volume_vpus_per_gb
-    kms_key_id              = each.value.source_details.kms_key_id
-  }
-  cloud_init = each.value.cloud_init
-  state      = each.value.state
+  source                     = "git@github.com:dev-null-loop/oci_core//instance"
+  for_each                   = local.instances
+  availability_domain        = each.value.availability_domain
+  compartment_id             = var.compartment_ids[each.value.compartment_name]
+  agent_config               = each.value.agent_config
+  enable_vnic_lookup_outputs = false
+  create_vnic_details        = each.value.create_vnic_details
+  defined_tags               = each.value.defined_tags
+  display_name               = each.value.display_name
+  fault_domain               = each.value.fault_domain
+  freeform_tags              = each.value.freeform_tags
+  preserve_boot_volume       = each.value.preserve_boot_volume
+  ssh_public_keys            = each.value.ssh_public_keys
+  shape                      = each.value.shape
+  shape_config               = each.value.shape_config
+  source_details             = each.value.source_details
+  cloud_init                 = each.value.cloud_init
+  state                      = each.value.state
 }

@@ -1,6 +1,6 @@
 data "oci_core_services" "these" {}
 
-data "oci_identity_availability_domains" "this" {
+data "oci_identity_availability_domains" "ads" {
   compartment_id = var.tenancy_ocid
 }
 
@@ -20,23 +20,21 @@ locals {
   }
 
   availability_domains = {
-    for idx, ad in data.oci_identity_availability_domains.this.availability_domains : idx + 1 => ad.name
+    for idx, ad in data.oci_identity_availability_domains.ads.availability_domains : idx + 1 => ad.name
   }
 
   security_lists = {
-    for sl_name, sl in var.security_lists : sl_name => merge(sl, {
-      egress_rules = [
-	for rule in sl.egress_rules : merge(rule, {
-	  destination = try(local.services[rule.destination].cidr_block, rule.destination)
-	})
-      ]
+    for k, v in var.security_lists : k => merge(v, {
+      egress_rules = [for rule in v.egress_rules : merge(rule, {
+	destination = try(local.services[rule.destination].cidr_block, rule.destination)
+      })]
     })
   }
 
   route_tables = {
-    for rt_name, rt in var.route_tables : rt_name => merge(rt, {
+    for k, v in var.route_tables : k => merge(v, {
       route_rules = [
-	for rr in rt.route_rules : {
+	for rr in v.route_rules : {
 	  description       = rr.description
 	  destination       = try(local.services[rr.destination].cidr_block, rr.destination)
 	  destination_type  = rr.destination_type
@@ -47,23 +45,24 @@ locals {
   }
 
   instances = {
-    for name, inst in var.instances : name => merge(inst, {
-      availability_domain = local.availability_domains[inst.availability_domain]
-      create_vnic_details = merge(inst.create_vnic_details, {
-	subnet_id = module.sn[inst.create_vnic_details.subnet_name].id
-	nsg_ids   = [for nsg_name in inst.create_vnic_details.nsg_names : module.nsg[nsg_name].id]
+    for k, v in var.instances : k => merge(v, {
+      availability_domain = local.availability_domains[v.availability_domain]
+      create_vnic_details = merge(v.create_vnic_details, {
+	subnet_id = module.sn[v.create_vnic_details.subnet_name].id
+	nsg_ids   = [for nsg_name in v.create_vnic_details.nsg_names : module.nsg[nsg_name].id]
       })
-      source_details = merge(inst.source_details, {
-	source_id = var.source_ids[inst.source_details.source_name]
+      source_details = merge(v.source_details, {
+	source_id = var.source_ids[v.source_details.source_name]
       })
+      ssh_public_keys = join("\n", v.ssh_public_keys)
     })
   }
 
   redis_clusters = {
-    for name, cluster in var.redis_clusters : name => merge(cluster, {
-      subnet_id               = module.sn[cluster.subnet_name].id
-      nsg_ids                 = [for nsg_name in cluster.nsg_names : module.nsg[nsg_name].id]
-      oci_cache_config_set_id = try(module.redis_config_sets[cluster.config_set_name].id, null)
+    for k, v in var.redis_clusters : k => merge(v, {
+      subnet_id               = module.sn[v.subnet_name].id
+      nsg_ids                 = [for nsg_name in v.nsg_names : module.nsg[nsg_name].id]
+      oci_cache_config_set_id = try(module.redis_config_sets[v.config_set_name].id, null)
     })
   }
 

@@ -115,8 +115,8 @@ variable "subnets" {
     dns_label                  = string
     prohibit_internet_ingress  = optional(bool, false)
     prohibit_public_ip_on_vnic = bool
-    sl_name                    = string
-    rt_name                    = string
+    security_list_names        = optional(list(string), [])
+    route_table_name           = optional(string)
     vcn_name                   = string
   }))
   default = {}

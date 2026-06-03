@@ -38,8 +38,8 @@ subnets = {
     dns_label                  = "insight"
     prohibit_internet_ingress  = false
     prohibit_public_ip_on_vnic = false
-    sl_name                    = "redis_insight"
-    rt_name                    = "public"
+    security_list_names        = ["redis_insight"]
+    route_table_name           = "public"
     vcn_name                   = "vcn"
   }
   cache = {
@@ -49,8 +49,8 @@ subnets = {
     dns_label                  = "cache"
     prohibit_internet_ingress  = true
     prohibit_public_ip_on_vnic = true
-    sl_name                    = "cache"
-    rt_name                    = "private"
+    security_list_names        = ["cache"]
+    route_table_name           = "private"
     vcn_name                   = "vcn"
   }
 }
