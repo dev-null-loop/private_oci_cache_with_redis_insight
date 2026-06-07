@@ -20,7 +20,6 @@ instances = {
     }
     source_details = {
       source_name = "Oracle-Linux-10.1-2026.04.30-3"
-      source_type = "image"
     }
     ssh_public_keys = [
       "ssh-rsa AAAA...replace_me"

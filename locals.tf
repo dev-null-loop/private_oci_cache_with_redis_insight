@@ -55,7 +55,6 @@ locals {
         source_id = var.source_ids[v.source_details.source_name]
       })
       ssh_public_keys = join("\n", v.ssh_public_keys)
-      cloud_init      = v.cloud_init
     })
   }
 

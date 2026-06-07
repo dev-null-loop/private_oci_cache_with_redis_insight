@@ -179,7 +179,7 @@ variable "instances" {
   type = map(object({
     availability_domain = number
     compartment_name    = string
-    display_name        = optional(string, null)
+    display_name        = string
     shape               = string
     shape_config = optional(object({
       baseline_ocpu_utilization = optional(string)
@@ -188,19 +188,13 @@ variable "instances" {
       ocpus                     = optional(number)
       vcpus                     = optional(number)
     }), null)
-    fault_domain  = optional(number, 1)
-    state         = optional(string, "RUNNING")
-    defined_tags  = optional(map(string), null)
-    freeform_tags = optional(map(string), {})
+    state = optional(string, "RUNNING")
     create_vnic_details = object({
       assign_public_ip       = optional(bool, false)
-      defined_tags           = optional(map(string), null)
       display_name           = optional(string, null)
-      freeform_tags          = optional(map(string), {})
       hostname_label         = optional(string, null)
       nsg_names              = optional(list(string), [])
       private_ip             = optional(string, null)
-      security_attributes    = optional(map(string), null)
       skip_source_dest_check = optional(bool, false)
       subnet_name            = string
       subnet_id              = optional(string)
@@ -212,7 +206,6 @@ variable "instances" {
       content_type = optional(string)
       vars         = optional(map(string), {})
     })), [])
-    preserve_boot_volume = optional(bool, false)
     source_details = object({
       source_name             = string
       source_type             = optional(string, "image")

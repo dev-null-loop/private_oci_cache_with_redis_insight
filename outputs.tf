@@ -19,7 +19,7 @@ output "vcns" {
 output "instances" {
   description = "Created instances."
   value = {
-    for k, v in module.vm : k => {
+    for k, v in module.instances : k => {
       id         = v.id
       public_ip  = v.public_ip == "" ? null : v.public_ip
       private_ip = v.private_ip

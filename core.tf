@@ -83,7 +83,7 @@ module "nsg_rule" {
   rules                      = each.value.rules
 }
 
-module "vm" {
+module "instances" {
   source                     = "git@github.com:dev-null-loop/oci_core//instance"
   for_each                   = local.instances
   availability_domain        = each.value.availability_domain
@@ -91,8 +91,6 @@ module "vm" {
   enable_vnic_lookup_outputs = false
   create_vnic_details        = each.value.create_vnic_details
   display_name               = each.value.display_name
-  fault_domain               = each.value.fault_domain
-  preserve_boot_volume       = each.value.preserve_boot_volume
   ssh_public_keys            = each.value.ssh_public_keys
   shape                      = each.value.shape
   shape_config               = each.value.shape_config
