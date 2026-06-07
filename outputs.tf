@@ -6,7 +6,7 @@ output "vcns" {
       display_name = v.display_name
       cidr_blocks  = v.cidr_blocks
       subnets = [
-        for sn_name, sn in module.sn : {
+        for sn_name, sn in module.subnets : {
           name       = sn_name
           cidr_block = sn.cidr_block
           id         = sn.id

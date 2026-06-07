@@ -6,9 +6,9 @@ data "oci_identity_availability_domains" "ads" {
 
 locals {
   network_entity_ids = merge(
-    { for k, v in module.ig : "ig_${k}" => v.id },
-    { for k, v in module.ng : "ng_${k}" => v.id },
-    { for k, v in module.sg : "sg_${k}" => v.id }
+    { for k, v in module.internet_gateways : "ig_${k}" => v.id },
+    { for k, v in module.nat_gateways : "ng_${k}" => v.id },
+    { for k, v in module.service_gateways : "sg_${k}" => v.id }
   )
 
   services = {
@@ -48,8 +48,8 @@ locals {
     for k, v in var.instances : k => merge(v, {
       availability_domain = local.availability_domains[v.availability_domain]
       create_vnic_details = merge(v.create_vnic_details, {
-        subnet_id = try(module.sn[v.create_vnic_details.subnet_name].id, v.create_vnic_details.subnet_id)
-        nsg_ids   = [for nsg_name in v.create_vnic_details.nsg_names : module.nsg[nsg_name].id]
+        subnet_id = try(module.subnets[v.create_vnic_details.subnet_name].id, v.create_vnic_details.subnet_id)
+        nsg_ids   = [for nsg_name in v.create_vnic_details.nsg_names : module.network_security_groups[nsg_name].id]
       })
       source_details = merge(v.source_details, {
         source_id = var.source_ids[v.source_details.source_name]
@@ -60,8 +60,8 @@ locals {
 
   redis_clusters = {
     for k, v in var.redis_clusters : k => merge(v, {
-      subnet_id               = module.sn[v.subnet_name].id
-      nsg_ids                 = [for nsg_name in v.nsg_names : module.nsg[nsg_name].id]
+      subnet_id               = module.subnets[v.subnet_name].id
+      nsg_ids                 = [for nsg_name in v.nsg_names : module.network_security_groups[nsg_name].id]
       oci_cache_config_set_id = try(module.redis_config_sets[v.config_set_name].id, null)
     })
   }
