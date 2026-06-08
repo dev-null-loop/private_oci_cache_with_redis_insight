@@ -96,5 +96,4 @@ module "instances" {
   shape_config               = each.value.shape_config
   source_details             = each.value.source_details
   cloud_init                 = each.value.cloud_init
-  state                      = each.value.state
 }
