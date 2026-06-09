@@ -67,19 +67,19 @@ module "subnets" {
   security_list_ids          = length(each.value.security_list_names) == 0 ? null : [for name in each.value.security_list_names : module.security_lists[name].id]
 }
 
-module "network_security_groups" {
+module "nsgs" {
   source         = "git@github.com:dev-null-loop/oci_core//nsg"
-  for_each       = var.network_security_groups
+  for_each       = var.nsgs
   compartment_id = var.compartment_ids[each.value.compartment_name]
   display_name   = each.value.display_name
   vcn_id         = module.vcns[each.value.vcn_name].id
 }
 
-module "network_security_group_rules" {
+module "nsg_rules" {
   source                     = "git@github.com:dev-null-loop/oci_core//nsg_rule"
-  for_each                   = var.network_security_group_rules
-  network_security_group_id  = module.network_security_groups[each.value.network_security_group_name].id
-  network_security_group_ids = { for k, v in module.network_security_groups : k => v.id }
+  for_each                   = var.nsg_rules
+  network_security_group_id  = module.nsgs[each.value.nsg_name].id
+  network_security_group_ids = { for k, v in module.nsgs : k => v.id }
   rules                      = each.value.rules
 }
 

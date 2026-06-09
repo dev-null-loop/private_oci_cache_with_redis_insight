@@ -55,7 +55,7 @@ subnets = {
   }
 }
 
-network_security_groups = {
+nsgs = {
   redis_insight = {
     compartment_name = "dev"
     display_name     = "redis-insight-nsg"
@@ -152,9 +152,9 @@ security_lists = {
   }
 }
 
-network_security_group_rules = {
+nsg_rules = {
   cache_from_redis_insight = {
-    network_security_group_name = "cache"
+    nsg_name = "cache"
     rules = {
       direction   = "INGRESS"
       protocol    = "6"
@@ -171,7 +171,7 @@ network_security_group_rules = {
     }
   }
   redis_insight_egress_all = {
-    network_security_group_name = "redis_insight"
+    nsg_name = "redis_insight"
     rules = {
       direction        = "EGRESS"
       protocol         = "all"
@@ -182,7 +182,7 @@ network_security_group_rules = {
     }
   }
   cache_egress_all = {
-    network_security_group_name = "cache"
+    nsg_name = "cache"
     rules = {
       direction        = "EGRESS"
       protocol         = "all"

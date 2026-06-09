@@ -26,7 +26,7 @@ This repo intentionally follows the guidance-repo root style:
 
 - `provider.tf`: provider configuration
 - `versions.tf`: Terraform and provider versions
-- `variables.tf`: shared identity and lookup variables
+- `identity.variables.tf`: shared identity variables
 - `core.variables.tf`: networking and instance schemas
 - `redis.variables.tf`: OCI Cache schemas
 - `locals.tf`: alias and ID resolution

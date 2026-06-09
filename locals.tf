@@ -49,7 +49,7 @@ locals {
       availability_domain = local.availability_domains[v.availability_domain]
       create_vnic_details = merge(v.create_vnic_details, {
         subnet_id = try(module.subnets[v.create_vnic_details.subnet_name].id, v.create_vnic_details.subnet_id)
-        nsg_ids   = [for nsg_name in v.create_vnic_details.nsg_names : module.network_security_groups[nsg_name].id]
+        nsg_ids   = [for nsg_name in v.create_vnic_details.nsg_names : module.nsgs[nsg_name].id]
       })
       source_details = merge(v.source_details, {
         source_id = var.source_ids[v.source_details.source_name]
@@ -61,7 +61,7 @@ locals {
   redis_clusters = {
     for k, v in var.redis_clusters : k => merge(v, {
       subnet_id               = module.subnets[v.subnet_name].id
-      nsg_ids                 = [for nsg_name in v.nsg_names : module.network_security_groups[nsg_name].id]
+      nsg_ids                 = [for nsg_name in v.nsg_names : module.nsgs[nsg_name].id]
       oci_cache_config_set_id = try(module.redis_config_sets[v.config_set_name].id, null)
     })
   }

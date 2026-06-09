@@ -122,7 +122,7 @@ variable "subnets" {
   default = {}
 }
 
-variable "network_security_groups" {
+variable "nsgs" {
   description = "Network security group definitions."
   type = map(object({
     compartment_name = string
@@ -132,10 +132,10 @@ variable "network_security_groups" {
   default = {}
 }
 
-variable "network_security_group_rules" {
+variable "nsg_rules" {
   description = "Network security group rule definitions."
   type = map(object({
-    network_security_group_name = string
+    nsg_name = string
     rules = object({
       direction        = string
       protocol         = string
